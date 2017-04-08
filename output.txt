@@ -1,0 +1,396 @@
+符号信息
+-------------------25{		
+FileWriter0		
+writer0		
+=90		
+26 ssssss map		
+FileWriter0		
+(1		
+"tokenOutput.txt"0		
+)14		
+writer0		
+.10		
+write0		
+(1		
+"符号信息"0		
+)14		
+writer0		
+.10		
+write0		
+(1		
+"\n"0		
+)14		
+27 ssssss map		
+(1		
+list0		
+.10		
+size0		
+(1		
+)14		
+>13		
+00		
+)14		
+-------------------31{		
+24 ssssss map		
+(1		
+20 ssssss map		
+x0		
+:		
+list0		
+)14		
+-------------------32{		
+writer0		
+.10		
+write0		
+(1		
+x0		
++3		
+"\t\t"0		
++3		
+"\n"0		
+)14		
+-------------------34}		
+-------------------36}		
+writer0		
+.10		
+flush0		
+(1		
+)14		
+writer0		
+.10		
+close0		
+(1		
+)14		
+-------------------39}		
+-------------------45{		
+peek0		
+=90		
+(1		
+20 ssssss map		
+)14		
+reader0		
+.10		
+read0		
+(1		
+)14		
+27 ssssss map		
+(1		
+(1		
+25 ssssss map		
+)14		
+peek0		
+==11		
+00		
+xffff0		
+)14		
+-------------------47{		
+this0		
+.10		
+isEnd0		
+=90		
+true0		
+-------------------49}		
+-------------------50}		
+-------------------52{		
+getChar0		
+(1		
+)14		
+27 ssssss map		
+(1		
+peek0		
+!=14		
+x0		
+)14		
+-------------------54{		
+28 ssssss map		
+false0		
+-------------------56}		
+peek0		
+=90		
+' '0		
+28 ssssss map		
+true0		
+-------------------59}		
+-------------------61{		
+24 ssssss map		
+(1		
+getChar0		
+(1		
+)14		
+)14		
+-------------------62{		
+27 ssssss map		
+(1		
+peek0		
+==11		
+' '0		
+||8		
+peek0		
+==11		
+'\t'0		
+||8		
+peek0		
+==11		
+'\r'0		
+)14		
+21 ssssss map		
+22 ssssss map		
+27 ssssss map		
+(1		
+peek0		
+==11		
+'\n'0		
+)14		
+line0		
+=90		
+line0		
++3		
+10		
+22 ssssss map		
+27 ssssss map		
+(1		
+peek0		
+==11		
+'/'0		
+&&7		
+getChar0		
+(1		
+'*'0		
+)14		
+)14		
+-------------------67{		
+24 ssssss map		
+(1		
+getChar0		
+(1		
+)14		
+)14		
+-------------------68{		
+27 ssssss map		
+(1		
+peek0		
+==11		
+'*'0		
+&&7		
+getChar0		
+(1		
+'/'0		
+)14		
+)14		
+16 ssssss map		
+22 ssssss map		
+21 ssssss map		
+-------------------73}		
+-------------------74}		
+22 ssssss map		
+16 ssssss map		
+-------------------76}		
+29 ssssss map		
+(1		
+peek0		
+)14		
+-------------------78{		
+18 ssssss map		
+'='0		
+:		
+27 ssssss map		
+(1		
+getChar0		
+(1		
+'='0		
+)14		
+)14		
+-------------------80{		
+28 ssssss map		
+"=="0		
+-------------------83}		
+22 ssssss map		
+-------------------83{		
+28 ssssss map		
+"="0		
+-------------------85}		
+18 ssssss map		
+'>'0		
+:		
+27 ssssss map		
+(1		
+getChar0		
+(1		
+'='0		
+)14		
+)14		
+-------------------87{		
+28 ssssss map		
+">="0		
+-------------------90}		
+22 ssssss map		
+-------------------90{		
+28 ssssss map		
+">"0		
+-------------------92}		
+18 ssssss map		
+'<'0		
+:		
+27 ssssss map		
+(1		
+getChar0		
+(1		
+'='0		
+)14		
+)14		
+-------------------94{		
+28 ssssss map		
+"<="0		
+-------------------97}		
+22 ssssss map		
+-------------------97{		
+28 ssssss map		
+"<"0		
+-------------------100}		
+18 ssssss map		
+'!'0		
+:		
+27 ssssss map		
+(1		
+getChar0		
+(1		
+'='0		
+)14		
+)14		
+-------------------102{		
+28 ssssss map		
+"!="0		
+-------------------105}		
+22 ssssss map		
+-------------------105{		
+28 ssssss map		
+"1"0		
+-------------------108}		
+-------------------110}		
+27 ssssss map		
+(1		
+Character0		
+.10		
+isDigit0		
+(1		
+peek0		
+)14		
+)14		
+-------------------112{		
+25 ssssss map		
+value0		
+=90		
+00		
+do0		
+-------------------114{		
+value0		
+=90		
+100		
+*5		
+value0		
++3		
+Character0		
+.10		
+digit0		
+(1		
+peek0		
+,		
+100		
+)14		
+getChar0		
+(1		
+)14		
+-------------------117}		
+31 ssssss map		
+(1		
+Character0		
+.10		
+isDigit0		
+(1		
+peek0		
+)14		
+)14		
+28 ssssss map		
+value0		
++3		
+""0		
+-------------------122}		
+27 ssssss map		
+(1		
+Character0		
+.10		
+isLetter0		
+(1		
+peek0		
+)14		
+)14		
+-------------------125{		
+StringBuffer0		
+sb0		
+=90		
+26 ssssss map		
+StringBuffer0		
+(1		
+)14		
+do0		
+-------------------129{		
+sb0		
+.10		
+append0		
+(1		
+peek0		
+)14		
+getChar0		
+(1		
+)14		
+-------------------132}		
+31 ssssss map		
+(1		
+Character0		
+.10		
+isLetterOrDigit0		
+(1		
+peek0		
+)14		
+||8		
+peek0		
+==11		
+'_'0		
+||8		
+peek0		
+==11		
+'-'0		
+)14		
+28 ssssss map		
+sb0		
+.10		
+toString0		
+(1		
+)14		
+-------------------135}		
+27 ssssss map		
+(1		
+(1		
+25 ssssss map		
+)14		
+peek0		
+!=14		
+00		
+xffff0		
+)14		
+-------------------137{		
+20 ssssss map		
+x0		
+=90		
+peek0		
+getChar0		
+(1		
+)14		
+28 ssssss map		
+x0		
++3		
+""0		
+-------------------142}		
+28 ssssss map		
+"null"0		
+-------------------146}		

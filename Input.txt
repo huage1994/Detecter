@@ -1,0 +1,176 @@
+package edu.tongji.sse;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by huage on 2017/3/28.
+ */
+
+ @test
+public class Lexer {
+
+    public int line =1;
+    private char peek = ' ';
+    private  BufferedReader reader = null;
+    private Boolean isEnd = false;
+
+    private List<String> list = new ArrayList<>();
+
+    public Boolean getReaderIsEnd(){
+        return this.isEnd;
+    }
+
+    public void saveToken(List<String> list) throws IOException{
+
+         System.out.println(test);
+        FileWriter writer = new FileWriter("tokenOutput.txt");
+          System.out.println(test);
+        writer.write("符号信息");
+          System.out.println(test);
+        writer.write("\n");
+          System.out.println(test);
+
+        if (list.size()>0)
+        {
+            for (String x :list) {
+            writer.write(x+"\t\t" +"\n",x+"\t\t" +"\n");
+            }
+
+        }
+        writer.flush();
+        writer.close();
+    }
+
+     public void saveToken(List<String> list) throws IOException{
+            FileWriter writer = new FileWriter("tokenOutput.txt");
+            writer.write("符号信息");
+            writer.write("\n");
+
+            if (list.size()>0)
+            {
+                for (String x :list) {
+                    writer.write(x+"\t\t" +"\n");
+                }
+
+            }
+            writer.flush();
+            writer.close();
+        }
+
+    public Lexer() throws IOException{
+        reader = new BufferedReader(new FileReader("input.txt"));
+    }
+
+    public void getChar() throws IOException{
+        peek = (char)reader.read();
+        if((int)peek == 0xffff){
+            this.isEnd = true;
+        }
+    }
+    public void getChar() throws IOException{
+            peek = (char)reader.read();
+            if((int)peek == 0xffff){
+                this.isEnd = true;
+            }
+        }
+
+    public Boolean getChar(char x) throws IOException {
+        getChar();
+        if (peek!=x){
+            return false;
+        }
+        peek = ' ';
+        return true;
+    }
+
+    public String scan() throws IOException {
+        for (; ; getChar()) {
+            if (peek == ' ' || peek == '\t' || peek == '\r')   //||peek == '\r'
+                continue;
+            else if (peek == '\n')
+                line = line + 1;
+            else if (peek == '/' && getChar('*')) {
+                for (; ; getChar()) {
+                    if (peek == '*' && getChar('/'))
+                        break;
+                    else
+                        continue;
+                }
+            } else
+                break;
+        }
+
+        switch (peek) {
+            case '=':
+                if (getChar('=')) {
+
+                    return "==";
+                } else {
+                    return "=";
+                }
+            case '>':
+                if (getChar('=')) {
+
+                    return ">=";
+                } else {
+                    return ">";
+                }
+            case '<':
+                if (getChar('=')) {
+                    ;
+                    return "<=";
+                } else {
+
+                    return "<";
+                }
+            case '!':
+                if (getChar('=')) {
+
+                    return "!=";
+                } else {
+
+                    return "1";
+                }
+
+        }
+
+        if (Character.isDigit(peek)) {
+            int value =0;
+            do {
+                value = 10 * value + Character.digit(peek, 10);
+                getChar();
+            } while (Character.isDigit(peek));
+
+
+            //table.put(n, "Num");
+            return value + "";
+        }
+
+
+        if (Character.isLetter(peek)) {
+            StringBuffer sb = new StringBuffer();
+
+            /* 首先得到整个的一个分割 */
+            do {
+                sb.append(peek);
+                getChar();
+            } while (Character.isLetterOrDigit(peek) || peek == '_' || peek == '-');
+
+            return sb.toString();
+        }
+
+        if ((int) peek != 0xffff) {
+            char x = peek;
+            getChar();
+            return x + "";   // 空格判断
+
+        }
+
+        return "null";
+
+    }
+
+
+}

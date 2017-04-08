@@ -1,0 +1,112 @@
+package edu.tongji.sse;
+
+import sun.rmi.log.LogInputStream;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+/**
+ * Created by huage on 2017/3/28.
+ */
+public class Word {
+
+    public static void segment(String inputFileName,String outputFileName) throws IOException {
+        int flag =0;  //用来做        if  有没有{}号判断
+        List<List<String>> totalList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
+        List<String> tmpList = new ArrayList<>();
+
+        Stack<Integer> stack = new Stack<>();
+        long start = System.currentTimeMillis();
+        Lexer lexer = new Lexer(inputFileName);
+        String lastword =" ";
+        String word = "";
+        while (lexer.getReaderIsEnd() == false){
+            lastword = word;
+            word = lexer.scan();
+
+            switch (flag){
+                case 0:
+                    if(word.equals("{")){
+                        list.add("-------------------"+lexer.line+"{");       //增加一个list或者是一个栈来识别代码块   超过6行  sta
+                        tmpList.add("-------------------"+lexer.line+"{");
+
+                        stack.push(lexer.line);
+                        System.out.println(stack.size());
+                    }
+                    else if(word.equals("}")){
+                        stack.pop();
+                    }
+                    if (stack.size()>1){
+                        flag = 1;
+                    }
+                    break;
+                case 1:
+//                    if (!lastword.equals(".") && word.equals("class"))
+//                    {
+//                        do {
+//                            System.out.println("yes");
+//                            lastword = word;
+//                            word = lexer.scan();
+//                        }while (!word.equals("{"));
+//                    }
+                    //状态2 stack<int line>
+
+
+                    if(word.equals("{")){
+                        list.add("-------------------"+lexer.line+"{");       //增加一个list或者是一个栈来识别代码块   超过6行  sta
+                        if(stack.size()==1) {
+                            tmpList = new ArrayList<>();
+                        }
+                        tmpList.add("-------------------" + lexer.line + "{");
+
+                        stack.push(lexer.line);
+                        System.out.println(stack.peek());
+                    }
+                    else if(word.equals("}")){
+                        list.add("-------------------"+lexer.line+"}");
+                        tmpList.add("-------------------"+lexer.line+"}");
+
+                        if (stack.size()>0)
+                            System.out.println(stack.peek());
+
+                        if (stack.size()==2&&(lexer.line-stack.peek())>3){
+                            List<String> x = new ArrayList<>();
+                            x.addAll(tmpList);         //存的是指针 所以要替换一下
+                            totalList.add(x);
+                        }
+                        stack.pop();
+
+                    }
+                    else if (!word.equals("public")&&!word.equals("private")&&!word.equals("protected")) {
+                        list.add(word);               //这个应该写到lexer里面 ， 因为还要判断是关键字还是标识符。
+                        tmpList.add(word);
+                    }
+
+                    //状态3 判断是否够两行list.addall
+            }
+
+
+
+        }
+        System.out.println(lexer.line);
+//        lexer.saveToken(list);
+        long end = System.currentTimeMillis();
+        System.out.println("timeis" + (end - start));
+
+        List<String> outputList = new ArrayList<>();
+        for (int i = 0; i<totalList.size();i++){
+            System.out.println("第"+i+"个");
+            System.out.println(totalList.get(i));
+            outputList.addAll(totalList.get(i));
+        }
+        lexer.saveToken(outputList,outputFileName);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Word.segment("input1.txt","output1.txt");
+
+    }
+}
