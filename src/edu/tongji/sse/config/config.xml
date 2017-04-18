@@ -4,14 +4,16 @@
         <equiv>
             <codeline>i++;</codeline>
             <codeline>i=i+1;</codeline>
+            <codeline>i +=1;</codeline>
         </equiv>
         <equiv>
-            <codeline>i++;</codeline>
-            <codeline>i=i+1;</codeline>
+            <codeline>5++;</codeline>
+            <codeline>iiii;;</codeline>
         </equiv>
     </equivs>
 
     <neglects>
         <codeline>int i;</codeline>
+        <codeline>String tr = "";</codeline>
     </neglects>
 </config>

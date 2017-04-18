@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class KeyWordAndType {
 
-    // 共计35个
+    // 共计36个
         /** 运算符*/
         public static final int PLUS = 3;//加
         public static final int MIN = 4;//减
@@ -44,6 +44,8 @@ public class KeyWordAndType {
         public static final int RIGHTLARGEBRACKET = 33;
 
        /** 界符{ ',', ';', '{', '}', '(', ')', '[', ']', '_', ':', '.', '"' };*/
+       public static final int SecondDIGIT = 29;
+
 
 
         /**标识符*/

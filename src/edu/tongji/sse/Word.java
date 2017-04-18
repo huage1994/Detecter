@@ -1,5 +1,6 @@
 package edu.tongji.sse;
 
+import edu.tongji.sse.config.Config;
 import edu.tongji.sse.model.Line;
 
 import java.io.IOException;
@@ -13,11 +14,11 @@ import java.util.Stack;
  * Created by huage on 2017/3/28.
  */
 public class Word {
-
+    public static HashMap<Integer, Integer> equivHashMap = new HashMap<>();
+    public static List<Integer> neglectList = new ArrayList<>();
 
     public  List<List<Line>> segment(String inputFileName, String outputFileName) throws IOException {
-
-
+        Config config = new Config();
         int flag =0;  //用来做        if  有没有{}号判断
         List<List<Line>> totalList = new ArrayList<List<Line>>();;
         List<String> list = new ArrayList<String>();
@@ -74,7 +75,15 @@ public class Word {
                                     tmp += lineTokenNumList.get(i) *pow;
                                     pow *=36;
                                 }
-                                tmpList.add(new Line(tmp,lexer.line));
+
+                                if (equivHashMap.get(tmp)!=null){
+                                    tmp = equivHashMap.get(tmp);
+                                }
+
+                                if (!neglectList.contains(tmp)) {
+                                    tmpList.add(new Line(tmp, lexer.line));
+                                }
+
                             }
                             lineTokenNumList = new ArrayList<Integer>();
 
@@ -89,7 +98,7 @@ public class Word {
 //                        if (stack.size()>0)
 //                            System.out.println(stack.peek());
 
-                        if (stack.size()==2&&(lexer.line-stack.peek())>4&&tmpList.size()>2){
+                        if (stack.size()==2&&(lexer.line-stack.peek())>4&&tmpList.size()>3){
                             List<Line> x = new ArrayList<Line>();
                             x.addAll(tmpList);         //存的是指针 所以要替换一下
                             totalList.add(x);
@@ -122,7 +131,14 @@ public class Word {
                                 tmp += lineTokenNumList.get(i) *pow;
                                 pow *=36;
                             }
-                            tmpList.add(new Line(tmp,lexer.line));
+
+                            if (equivHashMap.get(tmp)!=null){
+                                tmp = equivHashMap.get(tmp);
+                            }
+
+                            if (!neglectList.contains(tmp)) {
+                                tmpList.add(new Line(tmp, lexer.line));
+                            }
                         }
                         lineTokenNumList = new ArrayList<Integer>();
                     }
@@ -212,6 +228,6 @@ public class Word {
     public static void main(String[] args) throws IOException {
         Word word = new Word();
         System.out.println(word.segment("C:\\Users\\huage\\Desktop\\myOwnTest\\FunctionDefinitionAction.java", "newtest.txt"));
-        System.out.println(word.getOnelineCode("int i=0;"));
+
     }
 }

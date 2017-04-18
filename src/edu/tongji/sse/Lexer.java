@@ -19,6 +19,9 @@ public class Lexer {
     private  BufferedReader reader = null;
     private Boolean isEnd = false;
 
+    private Boolean varibleOneOrSecond =true;
+    private String lastVariable ="";
+    private int lastline = 0;
 
 
     public Boolean getReaderIsEnd(){
@@ -225,7 +228,9 @@ public class Lexer {
                 sb.append(peek);
             }while (peek!='\"'&&!getReaderIsEnd());
             getChar();
-            return KeyWordAndType.DIGIT;   //有时间加加好判断
+            //判断一行里面的多个变量。
+            return KeyWordAndType.DIGIT;
+
         }
 
         if (peek == '\'') {
@@ -289,9 +294,21 @@ public class Lexer {
                     return isKeyWord.intValue();
                 }
 
+                if (lastline!=line) {
+                    lastVariable = sb.toString();
+                    lastline = line;
+                    return KeyWordAndType.DIGIT;   //有时间加加好判断
+                } else if (lastVariable.equals(sb.toString())) {
+
+                    return KeyWordAndType.DIGIT;
+                } else {
+                    lastVariable = sb.toString();
+                    return KeyWordAndType.SecondDIGIT;
+                }
+
             }
 
-            return  KeyWordAndType.DIGIT;
+
         }
 
         if ((int) peek != 0xffff) {
