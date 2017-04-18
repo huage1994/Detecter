@@ -1,5 +1,7 @@
 package edu.tongji.sse;
 
+import edu.tongji.sse.model.Line;
+
 import java.util.List;
 
 /**
@@ -20,25 +22,30 @@ public class Compare {
 
 
     }
-    public static void lCcompare(List<Integer> list1,List<Integer> list2){
+    public static String lCcompare(List<Line> list1, List<Line> list2){
 
         int[][] array = new int[list1.size()][list2.size()];
-        System.out.println(array);
+        String result = null;
+//        System.out.println(array);
         for (int i =0;i<list1.size();i++) {
             for (int j = 0; j < list2.size(); j++) {
-                if (list1.get(i).equals(list2.get(j))) {
+                if (list1.get(i).lineHash.equals(list2.get(j).lineHash)) {
                     if (i==0||j==0) {
                         array[i][j] = 1;
                     }
                     else{
                         array[i][j] = array[i-1][j-1] +1;
+                        if (array[i][j]>4){
+                            result = list1.get(i-array[i][j]+1).lineNum+"-"+list1.get(i).lineNum+" : "+list2.get(j-array[i][j]+1).lineNum+"-"+list2.get(j).lineNum;
+                        }
                     }
 
                 }
-                System.out.print(array[i][j] + ",");
+//                System.out.print(array[i][j] + ",");
             }
-            System.out.println("");
+//            System.out.println("");
         }
+        return result;
     }
 
 }

@@ -1,5 +1,8 @@
 package edu.tongji.sse;
 
+import edu.tongji.sse.model.Line;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -7,30 +10,13 @@ import java.util.*;
  * Created by huage on 2017/4/4.
  */
 public class Shingling {
-    public static void main(String[] args) throws IOException {
-//        long start = System.currentTimeMillis();
-//        Word word = new Word();
-//        word.segment("input.txt","outputToken.txt"); //就应该返回这个结果---totalList
-//        System.out.println("this is new ");
-//        System.out.println(word.totalList.get(0).toString());
-//        System.out.println(word.totalList.get(1).toString());
-//        Shingling shingling =new Shingling();
-//        List<Integer> result = shingling.generateHash(word.totalList.get(0), 35, 6);
-//        List<Integer> result1 = shingling.generateHash(word.totalList.get(1), 35, 6);
-//        System.out.println(result.size());
-//        System.out.println(result1.size());
-//        System.out.println("new new one");
-//        System.out.println(result1.size());
-//        System.out.println("winnowing");
-//        System.out.println(shingling.winnowing(result,7).size());
-//        System.out.println(shingling.winnowing(result1,7).size());
-//        Compare.lCcompare(shingling.winnowing(result,7),shingling.winnowing(result1,7));
-//        long end = System.currentTimeMillis();
-//        System.out.println(end -start);
-    }
+    public static HashMap<Integer, List<Integer>> hashMap = new HashMap<Integer, List<Integer>>();
+    public static Integer z = 1;
 
-    public List<Integer> generateHash(List<Integer> list,int base, int n){
-        List<Integer> result = new ArrayList<>();
+
+    public List<Line> generateHash(List<Line> list,int base, int n){
+
+        List<Line> result = new ArrayList<Line>();
         Integer firstShingle = 0;
         Integer shingle = 0;
         Double pow;
@@ -40,27 +26,84 @@ public class Shingling {
         if (list.size()>n) {
             for (int i = 0; i < n; i++) {
                  pow = Math.pow(base, n - i - 1);
-                firstShingle += list.get(i) * pow.intValue();
+                firstShingle += list.get(i).lineHash * pow.intValue();
             }
-            result.add(firstShingle);
+            result.add(new Line(firstShingle,list.get(0).lineNum));
 
             for (int i =1;i<list.size()-n+1;i++){
-                firstShingle = result.get(i-1);
-                shingle = firstShingle * base - list.get(i - 1) * basePowInt + list.get(i + n - 1);
-                result.add(shingle);
+                firstShingle = result.get(i-1).lineHash;
+                shingle = firstShingle * base - list.get(i - 1).lineHash * basePowInt + list.get(i + n - 1).lineHash;
+                result.add(new Line(shingle,list.get(i).lineNum));
+
             }
 
 
         }
         else {
             System.out.println("list太小了");
+
         }
+
         return result;
     }
 
+    public List<Integer> generateWinnowHash(List<Integer> list, int n){
+
+        List<Integer> result = new ArrayList<Integer>();
+        Integer firstShingle = 0;
+        Integer shingle = 0;
+
+
+        if (list.size()>n) {
+            for (int i = 0; i < n; i++) {
+
+                firstShingle += list.get(i);
+            }
+            firstShingle /=n;
+
+            result.add(firstShingle);
+            List<Integer> tmp = hashMap.get(firstShingle);
+
+            if (tmp!=null){
+                tmp.add(z);
+            }
+            else {
+                tmp = new ArrayList<Integer>();
+                tmp.add(z);
+                hashMap.put(firstShingle, tmp);
+            }
+            z++;
+            for (int i =1;i<list.size()-n+1;i++){
+                firstShingle = result.get(i-1);
+                shingle = firstShingle * n - list.get(i - 1)  + list.get(i + n - 1);
+                shingle /= n;
+                result.add(shingle);
+
+                tmp = hashMap.get(shingle);
+
+                if (tmp!=null){
+                    tmp.add(z);
+                }
+                else {
+                    tmp = new ArrayList<Integer>();
+                    tmp.add(z);
+                    hashMap.put(shingle, tmp);
+                }
+                z++;
+            }
+
+
+        }
+        else {
+            System.out.println("list太小了");
+            result.add(-1);
+        }
+
+        return result;
+    }
     public List<Integer> winnowing(List<Integer> list, int n){
-        Map<Integer, Integer> mapResult = new HashMap<>();
-        List<Integer> result = new ArrayList<>();
+        Map<Integer, Integer> mapResult = new HashMap<Integer, Integer>();
+        List<Integer> result = new ArrayList<Integer>();
         Integer maxHash;
         Integer maxPos;
         for(int i = 0;i<list.size() - n+1;i++) {

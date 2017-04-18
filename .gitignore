@@ -17,3 +17,7 @@ MyOwnLexer.iml
 
 target/
 out/
+
+myout/
+newtest.txt
+outputToken1.txt

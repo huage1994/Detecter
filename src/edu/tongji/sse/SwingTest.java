@@ -1,6 +1,9 @@
 package edu.tongji.sse;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by huage on 2017/4/5.
@@ -8,8 +11,12 @@ import javax.swing.*;
 public class SwingTest {
 
     public static void main(String[] args) {
-        SwingTest swingTest = new SwingTest();
-        swingTest.test();
+        HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
+
+        hashMap.put(1, 3);
+        hashMap.get(1);
+
+        System.out.println(hashMap.get(1));
     }
     public void test(){
         int height;
@@ -24,4 +31,6 @@ public class SwingTest {
         bmi = (weight/((height/100)^2));
         JOptionPane.showMessageDialog(null, "Your BMI is: " + bmi);
     }
+
+
 }

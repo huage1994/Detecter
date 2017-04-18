@@ -1,10 +1,11 @@
-package edu.tongji.sse;
+package formyountest;
 
-import com.sun.javafx.geom.AreaOp;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import edu.tongji.sse.KeyWordAndType;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
 
@@ -20,15 +21,13 @@ public class Lexer {
     private Boolean isEnd = false;
 
 
-
     public Boolean getReaderIsEnd(){
         return this.isEnd;
     }
 
     public void saveToken(List<String> list,String outputFileName) throws IOException{
         FileWriter writer = new FileWriter(outputFileName);
-        writer.write("token info");
-
+        writer.write("符号信息");
         writer.write("\n");
 
         if (list.size()>0)
@@ -45,11 +44,6 @@ public class Lexer {
     public Lexer(String inputFileName) throws IOException{
         reader = new BufferedReader(new FileReader(inputFileName));
     }
-    public Lexer(String input,String xml)throws IOException{
-        InputStream myIn=new ByteArrayInputStream(input.getBytes());
-        reader = new BufferedReader(new InputStreamReader(myIn));
-    }
-
 
     public void getChar() throws IOException{
         lastpeek = peek;
@@ -69,13 +63,9 @@ public class Lexer {
         return true;
     }
 
-    public int scan() throws IOException {
+    public String scan() throws IOException {
         for (; ; getChar()) {
-            if (getReaderIsEnd())
-            {
-                break;
-            }
-            else if (peek == ' ' || peek == '\t' || peek == '\r')   //||peek == '\r'
+            if (peek == ' ' || peek == '\t' || peek == '\r')   //||peek == '\r'
                 continue;
             else if (peek == '\n') {
                 line = line + 1;
@@ -91,14 +81,11 @@ public class Lexer {
                 if (peek=='*') {
                     for (; ; getChar()) {
                         if (peek == '\n')
-                            line = line + 1;
-                        if (peek == '/' && lastpeek=='*') {
-                            getChar();
+                            line = line +1;
+                        if (lastpeek == '*' &&peek== '/' )
                             break;
-                        }
-                        if (getReaderIsEnd()){
+                        if(getReaderIsEnd())
                             break;
-                        }
                         else
                             continue;
                     }
@@ -115,94 +102,94 @@ public class Lexer {
             case  '\\':
                 getChar();
                 getChar();
-                return -1;
+                return "\\";
             case '[':
                 getChar();
-                return KeyWordAndType.LEFTMIDBRACKET;
+                return "[";
             case ']':
                 getChar();
-                return KeyWordAndType.RIGHTMIDBRACKET;
+                return "]";
             case '(':
                 getChar();
-                return  KeyWordAndType.LEFTSMALLBRACKET;
+                return  "(";
             case ')':
                 getChar();
-                return  KeyWordAndType.RIGHTSMALLBRACKET;
+                return ")";
             case '.':
                 getChar();
-                return  KeyWordAndType.DOT;
+                return  ".";
 
             case ',':
                 getChar();
-                return  KeyWordAndType.COMMA;
+                return  ",";
             case ':':
                 getChar();
-                return  KeyWordAndType.COLON;
+                return  ":";
             case ';':
                 getChar();                    //是不是需要返回分号还有待考证
-                return KeyWordAndType.SEMICOLON;
+                return ";";
             //
             case '{':
                 getChar();
-                return KeyWordAndType.LEFTLARGEBRACKET;
+                return "{";
             case '}':
                 getChar();
-                return KeyWordAndType.RIGHTLARGEBRACKET;
+                return "}";
             case '+':
                 getChar();
-                return  KeyWordAndType.PLUS;
+                return "+";
             case '-':
                 getChar();
-                return KeyWordAndType.MIN;
+                return "-";
             case '*':
                 getChar();
-                return KeyWordAndType.MUL;
+                return "*";
             case '/':
                 getChar();
-                return  KeyWordAndType.DIV;
+                return  "/";
             case '=':
                 if (getChar('=')) {
 
-                    return KeyWordAndType.EQ;
+                    return "==";
                 } else {
-                    return KeyWordAndType.ASSIGNMENT;
+                    return "=";
                 }
             case '>':
                 if (getChar('=')) {
 
-                    return KeyWordAndType.GTE;
+                    return ">=";
                 } else {
-                    return KeyWordAndType.GT;
+                    return ">";
                 }
             case '<':
                 if (getChar('=')) {
                     ;
-                    return KeyWordAndType.LT;
+                    return "<=";
                 } else {
 
-                    return KeyWordAndType.LTE;
+                    return "<";
                 }
             case '!':
                 if (getChar('=')) {
 
-                    return KeyWordAndType.UEQ;
+                    return "==";
                 } else {
 
-                    return KeyWordAndType.NOT;
+                    return "!";
                 }
             case '&':
                 if (getChar('&')){
-                    return KeyWordAndType.AND;
+                    return "&";
                 }
                 else {
-                    return KeyWordAndType.AND;
+                    return "&&";
                 }
             case '|':
                 if (getChar('|')){
-                    return KeyWordAndType.OR;
+                    return "||";
                 }
                 else {
-                    return KeyWordAndType.OR;
+                    return"|";
                 }
 
 
@@ -214,6 +201,7 @@ public class Lexer {
             sb.append(peek);
             do {
 
+
                 if (peek=='\\')
                 {
                     getChar();
@@ -223,15 +211,17 @@ public class Lexer {
                     getChar();
                 }
                 sb.append(peek);
-            }while (peek!='\"'&&!getReaderIsEnd());
+            }while (peek!='\"'&&getReaderIsEnd()==false); ///就是这个地方。
             getChar();
-            return KeyWordAndType.DIGIT;   //有时间加加好判断
+            return sb.toString();   //有时间加加好判断
         }
 
         if (peek == '\'') {
             StringBuffer sb = new StringBuffer();
             sb.append(peek);
             do {
+
+                getChar();
                 if (peek=='\\')
                 {
                     getChar();
@@ -241,9 +231,9 @@ public class Lexer {
                     getChar();
                 }
                 sb.append(peek);
-            }while (peek!='\''&&!getReaderIsEnd());
+            }while ((peek!='\'')&&getReaderIsEnd()==false);
             getChar();
-            return KeyWordAndType.DIGIT;
+            return sb.toString();
         }
 
         if (Character.isDigit(peek)) {
@@ -251,10 +241,10 @@ public class Lexer {
             do {
                 value = 10 * value + Character.digit(peek, 10);
                 getChar();
-            } while (Character.isDigit(peek));
+            } while (Character.isDigit(peek)&&getReaderIsEnd()==false);
 
 
-            return KeyWordAndType.DIGIT;          //值 位移？
+            return value+"";          //值 位移？
         }
 
 
@@ -265,44 +255,45 @@ public class Lexer {
             do {
                 sb.append(peek);
                 getChar();
-            } while (Character.isLetterOrDigit(peek) || peek == '_' || peek == '-');
+            } while ((Character.isLetterOrDigit(peek) || peek == '_' || peek == '-')&&getReaderIsEnd()==false);
             String s = sb.toString();
             //直接跳行 加快速度。
             if (s.equals("import")||s.equals("package")){
+                System.out.println("package");
                 reader.readLine();
                 line = line + 1;
-                return -1;
+                return s;
             }
 
             else {
                 if (s.endsWith(KeyWordAndType.exceptionKeyword)) {
-                    return -1;
+                    return s;
                 }
                 for(int i =0;i<KeyWordAndType.neglectfulKeyword.length;i++){
                     if(s.equals(KeyWordAndType.neglectfulKeyword[i]))
                     {
-                        return -1;
+                        return s;
                     }
                 }
                 Integer isKeyWord = KeyWordAndType.map.get(s);
                 if(isKeyWord!=null){
-                    return isKeyWord.intValue();
+                    return s;
                 }
 
             }
 
-            return  KeyWordAndType.DIGIT;
+            return  s;
         }
 
         if ((int) peek != 0xffff) {
             char x = peek;
             getChar();
             System.out.println(x);
-            return -1;   // 空格判断
+            return x+"";   // 空格判断
 
         }
 
-        return -2; //            null   改成-2
+        return " "; //            null   改成-2
 
     }
 

@@ -17,6 +17,7 @@ public class KeyWordAndType {
         public static final int MIN = 4;//减
         public static final int MUL = 5;//乘
         public static final int DIV = 6;//除
+        public static final int PERCENT = 36;
         public static final int AND = 7;//与
         public static final int OR = 8;//或
         public static final int NOT = 9;//非
@@ -150,4 +151,5 @@ public class KeyWordAndType {
     //System  out
     public static final int SYSTEM = -4;
     public static final int OUT = -5;
+    public static final int SEMICOLON = -6;
 }
