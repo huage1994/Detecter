@@ -7,8 +7,7 @@
             <codeline>i +=1;</codeline>
         </equiv>
         <equiv>
-            <codeline>5++;</codeline>
-            <codeline>iiii;;</codeline>
+            <codeline></codeline>
         </equiv>
     </equivs>
 

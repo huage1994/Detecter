@@ -17,6 +17,8 @@ public class Word {
     public static HashMap<Integer, Integer> equivHashMap = new HashMap<>();
     public static List<Integer> neglectList = new ArrayList<>();
 
+
+
     public  List<List<Line>> segment(String inputFileName, String outputFileName) throws IOException {
         Config config = new Config();
         int flag =0;  //用来做        if  有没有{}号判断
@@ -25,7 +27,7 @@ public class Word {
         List<Line> tmpList = new ArrayList<Line>();
         List<Integer> lineTokenNumList = new ArrayList<Integer>();
         Stack<Integer> stack = new Stack<Integer>();
-        long start = System.currentTimeMillis();
+
         Lexer lexer = new Lexer(inputFileName);
         int lastword = -1;
         int word = -1;
@@ -48,8 +50,10 @@ public class Word {
                         System.out.println(stack.size());
                     }
                     else if(word == KeyWordAndType.RIGHTLARGEBRACKET){
+                        if (stack.size()>0) {
+                            stack.pop();
+                        }
 
-                        stack.pop();
                     }
                     if (stack.size()>1){
                         flag = 1;
@@ -189,7 +193,7 @@ public class Word {
 
 //        lexer.saveToken(list);
         long end = System.currentTimeMillis();
-        System.out.println("timeis" + (end - start));
+
 
         List<String> outputList = new ArrayList<String>();
         for (int i = 0; i<totalList.size();i++){
@@ -227,7 +231,8 @@ public class Word {
 
     public static void main(String[] args) throws IOException {
         Word word = new Word();
-        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\myOwnTest\\FunctionDefinitionAction.java", "newtest.txt"));
+//        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\myOwnTest\\CommonAction.java", "newtest.txt"));
 
+        System.out.println(word.segment("F:\\迅雷下载\\JDK-master\\src\\javax\\xml\\bind\\annotation\\XmlSchemaTypes.java", "newtest.txt"));
     }
 }

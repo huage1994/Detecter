@@ -28,7 +28,7 @@ public class Config {
             for (int i=0;i<equivlist.getLength();i++){
                 Node book = equivlist.item(i);
                 NodeList childnode = book.getChildNodes();
-                System.out.println("第"+(i+1)+"个等价类");
+//                System.out.println("第"+(i+1)+"个等价类");
                 tmpList =  new ArrayList<>();
                 for (int j=0;j<childnode.getLength();j++) {
                     if (childnode.item(j).getNodeType()==Node.ELEMENT_NODE) {
@@ -56,7 +56,7 @@ public class Config {
         }
         Word.equivHashMap = equivHashMap;
         Word.neglectList = neglectList;
-        System.out.println(equivHashMap);
+
     }
 
 

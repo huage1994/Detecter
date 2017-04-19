@@ -31,7 +31,6 @@ public class Filetraves {
                     directorylist(sonFile);
                 } else {
                     if (sonFile.getName().endsWith(".java")) {
-                        System.out.println(sonFile.getName());
                         lists.add(sonFile);
                     }
                 }

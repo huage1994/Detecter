@@ -40,6 +40,7 @@ public class Shingling {
 
         }
         else {
+            //TODO  删掉
             System.out.println("list太小了");
 
         }
