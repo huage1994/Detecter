@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class Config {
     public  Config(){
-        List<Integer> tmpList;
-        HashMap<Integer, Integer> equivHashMap = new HashMap<>();
-        List<Integer> neglectList = new ArrayList<>();
+        List<Long> tmpList;
+        HashMap<Long, Long> equivHashMap = new HashMap<>();
+        List<Long> neglectList = new ArrayList<>();
         Word word = new Word();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -36,7 +36,7 @@ public class Config {
                     }
                 }
                 if(tmpList.size()>1) {
-                    Integer value = tmpList.get(0);
+                    Long value = tmpList.get(0);
                     for (int j = 1; j < tmpList.size(); j++) {
                         equivHashMap.put(tmpList.get(j), value);
                     }

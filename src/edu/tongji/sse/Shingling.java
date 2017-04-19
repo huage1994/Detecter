@@ -17,8 +17,8 @@ public class Shingling {
     public List<Line> generateHash(List<Line> list,int base, int n){
 
         List<Line> result = new ArrayList<Line>();
-        Integer firstShingle = 0;
-        Integer shingle = 0;
+        Long firstShingle = 0L;
+        Long shingle = 0L;
         Double pow;
         Double basePow = Math.pow(base, n);
         Integer basePowInt = basePow.intValue();

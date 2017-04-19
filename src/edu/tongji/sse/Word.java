@@ -14,8 +14,8 @@ import java.util.Stack;
  * Created by huage on 2017/3/28.
  */
 public class Word {
-    public static HashMap<Integer, Integer> equivHashMap = new HashMap<>();
-    public static List<Integer> neglectList = new ArrayList<>();
+    public static HashMap<Long, Long> equivHashMap = new HashMap<>();
+    public static List<Long> neglectList = new ArrayList<>();
 
 
 
@@ -70,7 +70,7 @@ public class Word {
                         }
 //                        tmpList.add(KeyWordAndType.LEFTLARGEBRACKET);      // To do               left该不该存
                         else {
-                            Integer tmp = 0;
+                            Long tmp = 0L;
                             if (lineTokenNumList!=null&&lineTokenNumList.size()>0){
                                 Integer pow = 1;
                                 for (int i=0;i<lineTokenNumList.size();i++)
@@ -126,7 +126,7 @@ public class Word {
 
                     }
                     else if (word == KeyWordAndType.SEMICOLON){
-                        Integer tmp = 0;
+                        Long tmp = 0L;
                         if (lineTokenNumList!=null&&lineTokenNumList.size()>0){
                             Integer pow = 1;
                             for (int i=0;i<lineTokenNumList.size();i++)
@@ -208,17 +208,17 @@ public class Word {
         return totalList;
     }
 
-    public Integer getOnelineCode(String x) throws IOException {
+    public Long getOnelineCode(String x) throws IOException {
         Lexer lexer = new Lexer(x,"xml");
         List<Integer> list = new ArrayList<>();
         while (lexer.getReaderIsEnd() == false){
-            Integer word = lexer.scan();
+            int word = lexer.scan();
             if (word>=0){
                 list.add(word);
             }
         }
         Integer pow = 1;
-        Integer tmp=0;
+        Long tmp=0L;
         for (int i=0;i<list.size();i++)
         {
 

@@ -17,7 +17,7 @@ public class SecondMain {
         long start = System.currentTimeMillis();
         SecondMain  secondMain = new SecondMain();
 
-        HashMap<Integer,List<SegmentAndLine>> lineHashMap = new HashMap();
+        HashMap<Long,List<SegmentAndLine>> lineHashMap = new HashMap();
         Integer linenum = 0;
         List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
         ////////////shingling 转换
