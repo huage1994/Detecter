@@ -314,7 +314,8 @@ public class Lexer {
         if ((int) peek != 0xffff) {
             char x = peek;
             getChar();
-            System.out.println(x);
+            //TODO   % 等字符
+//            System.out.println(x);
             return -1;   // 空格判断
 
         }

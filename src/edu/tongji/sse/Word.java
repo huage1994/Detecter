@@ -47,7 +47,7 @@ public class Word {
 
 
                         stack.push(lexer.line);
-                        System.out.println(stack.size());
+//                        System.out.println(stack.size());
                     }
                     else if(word == KeyWordAndType.RIGHTLARGEBRACKET){
                         if (stack.size()>0) {
@@ -192,19 +192,19 @@ public class Word {
         }
 
 //        lexer.saveToken(list);
-        long end = System.currentTimeMillis();
 
 
-        List<String> outputList = new ArrayList<String>();
-        for (int i = 0; i<totalList.size();i++){
-            System.out.println("第"+i+"个");
-            System.out.println(totalList.get(i).size());
-            System.out.println(totalList.get(i));
 
-            outputList.add(totalList.get(i).toString());
-        }
-        lexer.saveToken(outputList,outputFileName);
-        System.out.println(lexer.line);
+//        List<String> outputList = new ArrayList<String>();
+//        for (int i = 0; i<totalList.size();i++){
+//            System.out.println("第"+i+"个");
+//            System.out.println(totalList.get(i).size());
+//            System.out.println(totalList.get(i));
+//
+//            outputList.add(totalList.get(i).toString());
+//        }
+//        lexer.saveToken(outputList,outputFileName);
+//        System.out.println(lexer.line);
         return totalList;
     }
 
