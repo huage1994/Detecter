@@ -16,7 +16,7 @@ import java.util.Stack;
 public class Word {
     public static HashMap<Long, Long> equivHashMap = new HashMap<>();
     public static List<Long> neglectList = new ArrayList<>();
-
+    public  static int wordNum;
 
 
     public  List<List<Line>> segment(String inputFileName, String outputFileName) throws IOException {
@@ -39,7 +39,7 @@ public class Word {
                 word = lexer.scan();
 
             } while (word == -1&&!lexer.getReaderIsEnd());
-
+            wordNum++;
             switch (flag){
                 case 0:
                     if(word == KeyWordAndType.LEFTLARGEBRACKET){

@@ -17,18 +17,21 @@ public class SecondMain {
         long start = System.currentTimeMillis();
         SecondMain  secondMain = new SecondMain();
 
-        HashMap<Long,List<SegmentAndLine>> lineHashMap = new HashMap();
+        TreeMap<Long,List<SegmentAndLine>> lineHashMap = new TreeMap<>();  //这边换成了linked ，Treemap  就有序了。
         Integer linenum = 0;
+//        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
         List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
         ////////////shingling 转换
         List<List<Line>> segAfterShingling = new ArrayList<>();
         Shingling shingling = new Shingling();
         for (int i=0;i<segList.size();i++){
-            segAfterShingling.add(shingling.generateHash(segList.get(i), 37, 3));
+
+            segAfterShingling.add(shingling.generateHash(segList.get(i), 37, 10));
         }
 
 
         /////////////
+
         for (int i=0;i<segAfterShingling.size();i++){
             List<Line> segment = segAfterShingling.get(i);
             for (int j=0;j<segAfterShingling.get(i).size();j++){
@@ -51,22 +54,36 @@ public class SecondMain {
         Integer onlyOneKindofLine=0;
         Integer onlyOneKind=0;
         Iterator iterator = lineHashMap.entrySet().iterator();
+
+        int[] zz = new int[segList.size()];
         while (iterator.hasNext()){
             Map.Entry entry = (Map.Entry) iterator.next();
             List<SegmentAndLine> sameLineList = (List<SegmentAndLine>) entry.getValue();
             if (sameLineList.size()>1){
                 onlyOneKind++;
                 onlyOneKindofLine += sameLineList.size();
+                for (int i=0;i<sameLineList.size();i++){
+                    zz[sameLineList.get(i).segNum]=1;
+                }
             }
         }
 
         System.out.println("line kind that more than one :"+onlyOneKind);
         System.out.println("line num whose kind that more than one :"+onlyOneKindofLine);
-
-
-
+        int num=0;
+        for (int i=0;i<zz.length;i++){
+            if(zz[i] ==1)
+            {
+                num++;
+            }
+        }
+        System.out.println("存在克隆的代码段"+num);
+        System.out.println("总的代码段的数量"+segList.size());
         long end = System.currentTimeMillis();
         System.out.println("time is "+(end-start));
+
+        System.out.println(Word.wordNum+"个有意义的词");
+
     }
 
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <equivs>
+        <equiv>
+            <codeline>i++;</codeline>
+            <codeline>i=i+1;</codeline>
+            <codeline>i +=1;</codeline>
+        </equiv>
+        <equiv>
+            <codeline></codeline>
+        </equiv>
+    </equivs>
+
+    <neglects>
+        <codeline>int i;</codeline>
+        <codeline>String tr = "";</codeline>
+    </neglects>
+</config>
