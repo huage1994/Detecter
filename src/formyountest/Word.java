@@ -88,6 +88,7 @@ public class Word {
                         else if (word.equals(";")){
                             tmpList.addAll(smallist);
                             tmpList.add("隔离");
+                            tmpList.add(lexer.line+" ");
                             smallist = new ArrayList<String>();
                         }
                         else {
@@ -130,7 +131,7 @@ public class Word {
     public static void main(String[] args) throws IOException {
         Word word = new Word();
 //        word.segment("C:\\Users\\huage\\Desktop\\wingsoft\\core\\action\\CommonAction.java","outputToken1.txt");
-        word.segment("C:\\Users\\huage\\Desktop\\wingsoft\\core\\wfdao\\DrillDefDAO.java","outputToken1.txt");
+        word.segment("F:\\迅雷下载\\JDK-master\\src\\javax\\swing\\PopupFactory.java","outputToken1.txt");
 
     }
 }

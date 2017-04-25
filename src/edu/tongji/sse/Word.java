@@ -235,6 +235,6 @@ public class Word {
         Word word = new Word();
 //        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\myOwnTest\\CommonAction.java", "newtest.txt"));
 
-        System.out.println(word.segment("F:\\迅雷下载\\JDK-master\\src\\javax\\xml\\bind\\annotation\\XmlSchemaTypes.java", "newtest.txt"));
+        System.out.println(word.segment("F:\\迅雷下载\\JDK-master\\src\\javax\\swing\\PopupFactory.java", "newtest.txt"));
     }
 }

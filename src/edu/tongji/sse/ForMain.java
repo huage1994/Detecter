@@ -21,8 +21,8 @@ public class ForMain {
         int n = 3;
         TreeMap<Long,List<SegmentAndLine>> lineHashMap = new TreeMap<>();  //这边换成了linked ，Treemap  就有序了。
         Integer linenum = 0;
-        List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
-//        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
+//        List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
+        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
 //        System.out.println(segList);
         Shingling shingling = new Shingling();
         //////////////////
@@ -78,12 +78,47 @@ public class ForMain {
         TreeMap<Long, List<SegmentAndLine>> next2TreeMap = secondMain.getNextShingle(nextTreeMap,lastUnits, segList, 5);
         TreeMap<Long, List<SegmentAndLine>> next3TreeMap = secondMain.getNextShingle(next2TreeMap,lastUnits, segList, 6);
         TreeMap<Long, List<SegmentAndLine>> nextnTreeMap = secondMain.getNextShingle(next3TreeMap,lastUnits, segList, 7);
+        String resultReport ="Report:";
+        String resultdetailReport ="detail:";
+        String cloneset = "cloneset:\n";
+        List<TreeMap<Long, List<SegmentAndLine>>> mapList = new ArrayList<>();
+        mapList.add(nextnTreeMap);
+        for (int i = 1;i<412;i++){
+            mapList.add(secondMain.getNextShingle(mapList.get(i-1),lastUnits, segList, 8+i));
 
+        }
+        int clonenum=0;
+        for (int i = 1;i<412;i++){
+
+            Iterator iterator = mapList.get(i).entrySet().iterator();
+            while (iterator.hasNext())
+            {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
+                if (list.size()>1) {
+                    int length = 21;
+                    if (i==length){
+                        clonenum++;
+                        cloneset += clonenum+" <";
+                        for (SegmentAndLine se :
+                                list) {
+                            cloneset += secondMain.segmentToFilelist.get(se.segNum) + " " + segList.get(se.segNum).get(se.lineNum).lineNum + "行到"+(segList.get(se.segNum).get(se.lineNum+(i)+7).lineNum)+",";
+                        }
+                        cloneset += ">\n";
+                    }
+                }
+            }
+//            resultdetailReport += mapList.get(i).size() +"类" + "     "+x+"代码行数"+ "\n";
+
+        }
+        System.out.println(resultReport);
+        System.out.println(resultdetailReport);
+        System.out.println(cloneset);
         int nummm=0;
         System.out.println(secondMain.lastUnits.size());
         for (int i =0;i<secondMain.lastUnits.size();i++){
             Unit unit = secondMain.lastUnits.get(i);
-            List<SegmentAndLine> list = lineHashMap.get(unit.lineHash);
+            List<SegmentAndLine> list = nextnTreeMap.get(unit.lineHash);
             if(list!=null&&list.size()>1){
                 nummm++;
             }
@@ -160,8 +195,7 @@ public class ForMain {
         Integer deletedNum=0;
         SegmentAndLine cacheSeg = new SegmentAndLine(-1, -1);
         int j = 0;
-        System.out.println(inputList.get(0));
-        System.out.println(outputUnits.get(0));
+
         System.out.println(inputHashMap.size());
         for (int i =0;i<outputUnits.size();i++){
 
