@@ -79,7 +79,8 @@ public class Word {
                                     tmp += lineTokenNumList.get(i) *pow;
                                     pow *=36;
                                 }
-
+                                tmp %= 999999;
+                                tmp = Math.abs(tmp);
                                 if (equivHashMap.get(tmp)!=null){
                                     tmp = equivHashMap.get(tmp);
                                 }
@@ -135,7 +136,8 @@ public class Word {
                                 tmp += lineTokenNumList.get(i) *pow;
                                 pow *=36;
                             }
-
+                            tmp %= 999999;
+                            tmp = Math.abs(tmp);
                             if (equivHashMap.get(tmp)!=null){
                                 tmp = equivHashMap.get(tmp);
                             }

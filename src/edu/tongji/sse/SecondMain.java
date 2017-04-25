@@ -26,7 +26,7 @@ public class SecondMain {
         Shingling shingling = new Shingling();
         for (int i=0;i<segList.size();i++){
 
-            segAfterShingling.add(shingling.generateHash(segList.get(i), 37, 10));
+            segAfterShingling.add(shingling.generateHash(segList.get(i), 37, 6));
         }
 
 
@@ -61,8 +61,9 @@ public class SecondMain {
             List<SegmentAndLine> sameLineList = (List<SegmentAndLine>) entry.getValue();
             if (sameLineList.size()>1){
                 onlyOneKind++;
-                onlyOneKindofLine += sameLineList.size();
+
                 for (int i=0;i<sameLineList.size();i++){
+                    onlyOneKindofLine++;
                     zz[sameLineList.get(i).segNum]=1;
                 }
             }
@@ -83,7 +84,7 @@ public class SecondMain {
         System.out.println("time is "+(end-start));
 
         System.out.println(Word.wordNum+"个有意义的词");
-
+//        System.out.println(segAfterShingling);
     }
 
 

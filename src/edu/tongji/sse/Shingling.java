@@ -20,10 +20,12 @@ public class Shingling {
         Long firstShingle = 0L;
         Long shingle = 0L;
         Double pow;
-        Double basePow = Math.pow(base, n);
+        Double basePow = Math.pow(base, n-1);
         Integer basePowInt = basePow.intValue();
 
         if (list.size()>n) {
+
+            //TODO 判断n是否越界。 abs
             for (int i = 0; i < n; i++) {
                  pow = Math.pow(base, n - i - 1);
                 firstShingle += list.get(i).lineHash * pow.intValue();
@@ -32,7 +34,7 @@ public class Shingling {
 
             for (int i =1;i<list.size()-n+1;i++){
                 firstShingle = result.get(i-1).lineHash;
-                shingle = firstShingle * base - list.get(i - 1).lineHash * basePowInt + list.get(i + n - 1).lineHash;
+                shingle = (firstShingle - list.get(i - 1).lineHash * basePowInt) * base + list.get(i + n - 1).lineHash;
                 result.add(new Line(shingle,list.get(i).lineNum));
 
             }
