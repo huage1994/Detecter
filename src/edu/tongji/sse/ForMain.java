@@ -2,6 +2,7 @@ package edu.tongji.sse;
 
 import edu.tongji.sse.model.Line;
 import edu.tongji.sse.model.SegmentAndLine;
+import edu.tongji.sse.model.Unit;
 
 import java.io.File;
 import java.util.*;
@@ -12,6 +13,8 @@ import java.util.*;
 public class ForMain {
 
     public List<String> segmentToFilelist = new ArrayList<>();    //segment to which File
+    public static List<Unit> lastUnits = new ArrayList<>();
+
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
         ForMain secondMain = new ForMain();
@@ -50,6 +53,8 @@ public class ForMain {
                 else {
                     sameLineList.add(segmentAndLine);
                 }
+                Unit unit = new Unit(segment.get(j).lineHash, segmentAndLine);
+                secondMain.lastUnits.add(unit);
                 linenum++;
             }
         }
@@ -69,20 +74,32 @@ public class ForMain {
         System.out.println(45489459173343L*37+segList.get(0).get(1 + 3).lineHash);
 
 
-        TreeMap<Long, List<SegmentAndLine>> nextTreeMap = secondMain.getNextShingle(lineHashMap, segList, 4);
-        TreeMap<Long, List<SegmentAndLine>> next2TreeMap = secondMain.getNextShingle(nextTreeMap, segList, 5);
-        TreeMap<Long, List<SegmentAndLine>> next3TreeMap = secondMain.getNextShingle(next2TreeMap, segList, 6);
-        TreeMap<Long, List<SegmentAndLine>> nextnTreeMap = secondMain.getNextShingle(next3TreeMap, segList, 7);;
-        for (int i=0;i<50;i++){
-            System.out.println("第"+(i+8));
-            nextnTreeMap = secondMain.getNextShingle(nextnTreeMap, segList, i+8);
+        TreeMap<Long, List<SegmentAndLine>> nextTreeMap = secondMain.getNextShingle(lineHashMap, lastUnits,segList, 4);
+        TreeMap<Long, List<SegmentAndLine>> next2TreeMap = secondMain.getNextShingle(nextTreeMap,lastUnits, segList, 5);
+        TreeMap<Long, List<SegmentAndLine>> next3TreeMap = secondMain.getNextShingle(next2TreeMap,lastUnits, segList, 6);
+        TreeMap<Long, List<SegmentAndLine>> nextnTreeMap = secondMain.getNextShingle(next3TreeMap,lastUnits, segList, 7);
+
+        int nummm=0;
+        System.out.println(secondMain.lastUnits.size());
+        for (int i =0;i<secondMain.lastUnits.size();i++){
+            Unit unit = secondMain.lastUnits.get(i);
+            List<SegmentAndLine> list = lineHashMap.get(unit.lineHash);
+            if(list!=null&&list.size()>1){
+                nummm++;
+            }
         }
+        System.out.println(nummm+"-------");
+//        for (int i=0;i<50;i++){
+//            System.out.println("第"+(i+8));
+//            nextnTreeMap = secondMain.getNextShingle(nextnTreeMap, segList, i+8);
+//        }
+
 //        System.out.println(next2TreeMap);
 //        System.out.println("fsdf:"+secondMain.segmentToFilelist.get(10703)+segList.get(10703).get(162).lineNum);
 //        System.out.println("fsdf:"+secondMain.segmentToFilelist.get(10705)+segList.get(10705).get(20).lineNum);
         Integer z =0;
         Integer x= 0;
-        Iterator iterator = next3TreeMap.entrySet().iterator();
+        Iterator iterator = lineHashMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             List<Line> list = (List<Line>) entry.getValue();
@@ -93,6 +110,8 @@ public class ForMain {
         }
         System.out.println(z);
         System.out.println(x);
+        long end = System.currentTimeMillis();
+        System.out.println("time is "+(end-start));
     }
 
 //        Iterator iterator = lineHashMap.entrySet().iterator();
@@ -102,6 +121,125 @@ public class ForMain {
 //
 //
 //    }
+
+    public TreeMap<Long,List<SegmentAndLine>> getNextShingle(TreeMap<Long,List<SegmentAndLine>> inputHashMap,List<Unit> inputList, List<List<Line>>  segList,int n){
+
+        System.out.println("n----n---------");
+        TreeMap<Long, List<SegmentAndLine>> plus1LineMap = new TreeMap<>();
+        Integer onlyOneKindofLine=0;
+        Integer onlyOneKind=0;
+        Iterator iterator = inputHashMap.entrySet().iterator();
+        int[] zz = new int[segList.size()];
+        List<Unit> outputUnits = new ArrayList<>();
+
+        for (int i =0;i<inputList.size();i++){
+            Unit unit = inputList.get(i);
+            if(inputHashMap.get(unit.lineHash).size()>1){
+                onlyOneKindofLine++;
+                if(unit.segmentAndLine.lineNum+n > segList.get(unit.segmentAndLine.segNum).size())
+                {
+                    continue;
+                }
+                Long key = unit.lineHash;
+                Long plusKey = key % 99999999;
+                plusKey = plusKey*14 + segList.get(unit.segmentAndLine.segNum).get(unit.segmentAndLine.lineNum+n-1).lineHash;
+                outputUnits.add(new Unit(plusKey, unit.segmentAndLine));
+                List<SegmentAndLine> pluSameLineList = plus1LineMap.get(plusKey);
+                if (pluSameLineList==null) {
+                    pluSameLineList = new ArrayList<>();
+                    pluSameLineList.add(unit.segmentAndLine);
+                    plus1LineMap.put(plusKey, pluSameLineList);
+                }
+                else {
+                    pluSameLineList.add(unit.segmentAndLine);
+                }
+            }
+        }
+        lastUnits = outputUnits;
+        //消除
+        Integer deletedNum=0;
+        SegmentAndLine cacheSeg = new SegmentAndLine(-1, -1);
+        int j = 0;
+        System.out.println(inputList.get(0));
+        System.out.println(outputUnits.get(0));
+        System.out.println(inputHashMap.size());
+        for (int i =0;i<outputUnits.size();i++){
+
+            Unit unit = outputUnits.get(i);
+            if (plus1LineMap.get(unit.lineHash).size()>1){
+                if (unit.segmentAndLine.compare(cacheSeg)==1)        //后一个 肯定比前一个的下一行 大或者相等。
+                {
+                    ///////////
+                    while (cacheSeg.compare(inputList.get(j).segmentAndLine)==1){
+                        j++;
+                    }
+                    Unit inputUnit = inputList.get(j);
+                    if (cacheSeg.compare(inputUnit.segmentAndLine)==0){
+                        List<SegmentAndLine> list = inputHashMap.get(inputUnit.lineHash);
+                        //TODO 二分查找。 finish
+                        //TODO 判断n+1的那个 finish
+                        //TODO 判断 445的情况
+                        int key = inputUnit.segmentAndLine.compareInList(list);
+                        if (key==-1){
+                            System.out.println("不存在把");
+                        }
+                        else
+                        {
+                            list.remove(key);
+                            if (list.size()==0)
+                            {
+                                inputHashMap.remove(inputUnit.lineHash);
+                            }
+                            deletedNum++;
+                        }
+                    }
+
+                    /////////
+                }
+                ////////////
+                while (unit.segmentAndLine.compare(inputList.get(j).segmentAndLine)==1){
+                    j++;
+                }
+                Unit inputUnit = inputList.get(j);
+                if (unit.segmentAndLine.compare(inputUnit.segmentAndLine)==0){
+                    List<SegmentAndLine> list = inputHashMap.get(inputUnit.lineHash);
+                    //TODO 二分查找。
+                    //TODO 判断 445的情况  用output的size和 list的size判断即可。
+
+                    int key = inputUnit.segmentAndLine.compareInList(list);
+                    if (key==-1){
+                        System.out.println("不存在把");
+                    }
+                    else
+                    {
+                        list.remove(key);
+                        if (list.size()==0)
+                        {
+                            inputHashMap.remove(inputUnit.lineHash);
+                        }
+                        deletedNum++;
+                    }
+
+                }
+            }
+            cacheSeg = unit.segmentAndLine.getNextLineSeg();
+        }
+        System.out.println("deleted is "+deletedNum);
+        System.out.println(inputHashMap.size());
+        System.out.println("line kind that more than one :"+onlyOneKind);
+        System.out.println("line num whose kind that more than one :"+onlyOneKindofLine);
+        int num=0;
+        for (int i=0;i<zz.length;i++){
+            if(zz[i] ==1)
+            {
+                num++;
+            }
+        }
+        System.out.println("存在克隆的代码段"+num);
+        System.out.println("总的代码段的数量"+segList.size());
+        long end = System.currentTimeMillis();
+        return plus1LineMap;
+    }
 
     public TreeMap<Long,List<SegmentAndLine>> getNextShingle(TreeMap<Long,List<SegmentAndLine>> inputHashMap, List<List<Line>>  segList,int n){
 
