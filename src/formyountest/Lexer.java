@@ -94,6 +94,9 @@ public class Lexer {
                     reader.readLine();
                     line = line + 1;
                 }
+                else if (peek=='\n'){
+                    line = line +1;                //TODO important
+                }
             } else
                 break;
         }

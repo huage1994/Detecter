@@ -95,8 +95,8 @@ public class Lexer {
                     for (; ; getChar()) {
                         if (peek == '\n')
                             line = line + 1;
-                        if (peek == '/' && lastpeek=='*') {
-                            getChar();
+                        if (lastpeek=='*'&& peek == '/' ) {
+                            //     getChar();
                             break;
                         }
                         if (getReaderIsEnd()){
@@ -105,10 +105,14 @@ public class Lexer {
                         else
                             continue;
                     }
+
                 }
                 else if (peek=='/'){
                     reader.readLine();
                     line = line + 1;
+                }
+                else if (peek=='\n'){
+                    line = line +1;                //TODO important
                 }
             } else
                 break;

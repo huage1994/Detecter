@@ -227,7 +227,8 @@ public class Word {
             tmp += list.get(i) *pow;
             pow *=36;
         }
-
+        tmp %= 999999;
+        tmp = Math.abs(tmp);
         return tmp;
     }
 
@@ -235,6 +236,10 @@ public class Word {
         Word word = new Word();
 //        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\myOwnTest\\CommonAction.java", "newtest.txt"));
 
-        System.out.println(word.segment("F:\\迅雷下载\\JDK-master\\src\\javax\\swing\\PopupFactory.java", "newtest.txt"));
+        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\wingsoft\\core\\action\\CommonQueryAction.java", "newtest.txt"));
+        System.out.println("--------------------------------------");
+        System.out.println(word.segment("C:\\Users\\huage\\Desktop\\wingsoft\\core\\action\\CrossFieldRebuildAction.java", "newtest.txt"));
+
+//        System.out.println(word.getOnelineCode(" switch (transferType)"));
     }
 }

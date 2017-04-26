@@ -1,5 +1,6 @@
 package edu.tongji.sse.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,6 +62,16 @@ public class SegmentAndLine {
         }
         return -1;
 
+    }
+
+    public static void main(String[] args) {
+        SegmentAndLine segmentAndLine = new SegmentAndLine(5, 6 );
+        List<SegmentAndLine> list = new ArrayList<>();
+        list.add(segmentAndLine);
+        list.add(segmentAndLine.getNextLineSeg());
+        list.add(segmentAndLine.getNextLineSeg().getNextLineSeg());
+        System.out.println(list);
+        System.out.println(segmentAndLine.getNextLineSeg().compareInList(list));
     }
 
 

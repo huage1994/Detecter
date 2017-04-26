@@ -21,8 +21,8 @@ public class ForMain {
         int n = 3;
         TreeMap<Long,List<SegmentAndLine>> lineHashMap = new TreeMap<>();  //这边换成了linked ，Treemap  就有序了。
         Integer linenum = 0;
-//        List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
-        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
+        List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
+//        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
 //        System.out.println(segList);
         Shingling shingling = new Shingling();
         //////////////////
@@ -84,8 +84,11 @@ public class ForMain {
         List<TreeMap<Long, List<SegmentAndLine>>> mapList = new ArrayList<>();
         mapList.add(nextnTreeMap);
         for (int i = 1;i<412;i++){
+            if (i==20)
+            System.out.println(getTotal(mapList.get(i-1))+"sdfsdf"+mapList.get(i-1).size()+"ffffff"+getMoreThanOneTotal(mapList.get(i-1)));
             mapList.add(secondMain.getNextShingle(mapList.get(i-1),lastUnits, segList, 8+i));
-
+            if (i==20)
+                System.out.println(getTotal(mapList.get(i-1))+"sdfsdf"+mapList.get(i-1).size()+"ffffff"+getMoreThanOneTotal(mapList.get(i-1)));
         }
         int clonenum=0;
         for (int i = 1;i<412;i++){
@@ -96,7 +99,7 @@ public class ForMain {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
                 if (list.size()>1) {
-                    int length = 21;
+                    int length = 31;
                     if (i==length){
                         clonenum++;
                         cloneset += clonenum+" <";
@@ -191,6 +194,8 @@ public class ForMain {
             }
         }
         lastUnits = outputUnits;
+
+
         //消除
         Integer deletedNum=0;
         SegmentAndLine cacheSeg = new SegmentAndLine(-1, -1);
@@ -200,6 +205,8 @@ public class ForMain {
         for (int i =0;i<outputUnits.size();i++){
 
             Unit unit = outputUnits.get(i);
+
+            //TODO 可能顺序有问题。  最后一个没有处理
             if (plus1LineMap.get(unit.lineHash).size()>1){
                 if (unit.segmentAndLine.compare(cacheSeg)==1)        //后一个 肯定比前一个的下一行 大或者相等。
                 {
@@ -255,9 +262,35 @@ public class ForMain {
                     }
 
                 }
+                cacheSeg = unit.segmentAndLine.getNextLineSeg();
             }
-            cacheSeg = unit.segmentAndLine.getNextLineSeg();
+
         }
+//////////////////////新增加的
+        if (j+1<inputHashMap.size()) {
+            Unit inputUnit = inputList.get(j + 1);
+            if (cacheSeg.compare(inputUnit.segmentAndLine) == 0) {
+                List<SegmentAndLine> list = inputHashMap.get(inputUnit.lineHash);
+                //TODO 二分查找。 finish
+                //TODO 判断n+1的那个 finish
+                //TODO 判断 445的情况
+                int key = inputUnit.segmentAndLine.compareInList(list);
+                if (key == -1) {
+                    System.out.println("不存在把");
+                } else {
+                    list.remove(key);
+                    if (list.size() == 0) {
+                        inputHashMap.remove(inputUnit.lineHash);
+                    }
+                    deletedNum++;
+                }
+            }
+        }
+        else {
+            System.out.println("-fzzf---------------");
+        }
+//////////////////////新增加的
+
         System.out.println("deleted is "+deletedNum);
         System.out.println(inputHashMap.size());
         System.out.println("line kind that more than one :"+onlyOneKind);
@@ -362,5 +395,31 @@ public class ForMain {
             System.out.println("文件无内容");
         }
         return totalresult;
+    }
+
+    public static int getTotal(TreeMap<Long, List<SegmentAndLine>> treeMap){
+        Iterator iterator = treeMap.entrySet().iterator();
+        int x=0;
+        while (iterator.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
+
+            x += list.size();
+        }
+        return  x;
+    }
+    public static int getMoreThanOneTotal(TreeMap<Long, List<SegmentAndLine>> treeMap){
+        Iterator iterator = treeMap.entrySet().iterator();
+        int x=0;
+        while (iterator.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
+            if (list.size()>1) {
+                x += list.size();
+            }
+        }
+        return  x;
     }
 }
