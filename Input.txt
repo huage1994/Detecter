@@ -25,7 +25,11 @@ public class Lexer {
     public void saveToken(List<String> list) throws IOException{
 
          System.out.println(test);
-        FileWriter writer = new FileWriter("tokenOutput.txt");
+        FileWriter
+
+
+
+         writer = new FileWriter("tokenOutput.txt");
           System.out.println(test);
         writer.write("符号信息");
           System.out.println(test);

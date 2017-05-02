@@ -1,5 +1,6 @@
 package edu.tongji.sse;
 
+import edu.tongji.sse.model.CloneSet;
 import edu.tongji.sse.model.Line;
 import edu.tongji.sse.model.SegmentAndLine;
 import edu.tongji.sse.model.Unit;
@@ -15,15 +16,91 @@ public class ForMain {
     public List<String> segmentToFilelist = new ArrayList<>();    //segment to which File
     public static List<Unit> lastUnits = new ArrayList<>();
 
+    public List<CloneSet> getCloneSets(int n,String url){
+        List<CloneSet> cloneSets = new ArrayList<>();
+        long start = System.currentTimeMillis();
+        ForMain secondMain = new ForMain();
+        HashMap<Long,List<SegmentAndLine>> lineHashMap = new HashMap<>();
+        List<List<Line>> segList = secondMain.segmentAllFile(url);
+        Shingling shingling = new Shingling();
+        List<List<Line>> segAfterShingling = new ArrayList<>();
+        for (int i =0;i<segList.size();i++) {
+            segAfterShingling.add(shingling.generateHash(segList.get(i), 37, n));
+        }
+
+        for (int i=0;i<segAfterShingling.size();i++){
+            List<Line> segment = segAfterShingling.get(i);
+            for (int j=0;j<segAfterShingling.get(i).size();j++){             //零的话 也可以处理。
+                SegmentAndLine segmentAndLine = new SegmentAndLine(i, j);
+                List<SegmentAndLine> sameLineList = lineHashMap.get(segment.get(j).lineHash);
+                if (sameLineList==null) {
+                    sameLineList = new ArrayList<>();
+                    sameLineList.add(segmentAndLine);
+                    lineHashMap.put(segment.get(j).lineHash, sameLineList);
+                }
+                else {
+                    sameLineList.add(segmentAndLine);
+                }
+                Unit unit = new Unit(segment.get(j).lineHash, segmentAndLine);
+                secondMain.lastUnits.add(unit);
+            }
+        }
+
+        List<HashMap<Long, List<SegmentAndLine>>> mapList = new ArrayList<>();
+        mapList.add(lineHashMap);  //第0个 是 3 shingling
+
+        String resultReport ="Report:";
+        String resultdetailReport ="detail:";
+        String cloneset = "cloneset:\n";
+
+        //开始迭代。
+        int x = 0;
+        for (int i = 1;lastUnits.size()!=0;i++){
+            mapList.add(secondMain.getNextShingle(mapList.get(i-1),lastUnits, segList, n+i));
+            x++;
+        }
+        System.out.println(x+"skh ");
+        int clonenum=0;
+        for (int i = 1;i<mapList.size();i++){
+
+            Iterator iterator = mapList.get(i).entrySet().iterator();
+            while (iterator.hasNext())
+            {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
+                if (list.size()>1) {
+                    
+
+                    int length = 12;
+                    if (i==length){
+                        clonenum++;
+                        cloneset += clonenum+" <";
+                        for (SegmentAndLine se :
+                                list) {
+                            cloneset += secondMain.segmentToFilelist.get(se.segNum) + " " + segList.get(se.segNum).get(se.lineNum).preLineNum + "行到"+(segList.get(se.segNum).get(se.lineNum+(i)+n-1).lineNum)+",";
+                        }
+                        cloneset += ">\n";
+                    }
+                }
+            }
+//            resultdetailReport += mapList.get(i).size() +"类" + "     "+x+"代码行数"+ "\n";
+
+        }
+        System.out.println(resultReport);
+        System.out.println(resultdetailReport);
+        System.out.println(cloneset);
+        System.out.println(lastUnits.size());
+        return cloneSets;
+    }
+
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
         ForMain secondMain = new ForMain();
         int n = 3;
-        TreeMap<Long,List<SegmentAndLine>> lineHashMap = new TreeMap<>();  //这边换成了linked ，Treemap  就有序了。
+        HashMap<Long,List<SegmentAndLine>> lineHashMap = new HashMap<>();  //这边换成了linked ，HashMap  就有序了。
         Integer linenum = 0;
         List<List<Line>> segList = secondMain.segmentAllFile("F:\\迅雷下载\\JDK-master");
 //        List<List<Line>> segList = secondMain.segmentAllFile("C:\\Users\\huage\\Desktop\\wingsoft");
-//        System.out.println(segList);
         Shingling shingling = new Shingling();
         //////////////////
         List<List<Line>> segAfterShingling = new ArrayList<>();
@@ -32,11 +109,6 @@ public class ForMain {
         }
         System.out.println("------------");
 
-        ////////////////////////
-        List<List<Line>> nextShingling = new ArrayList<>();
-        for (int i =0;i<segList.size();i++) {
-            nextShingling.add(shingling.generateHash(segList.get(i), 37, n+1));
-        }
         System.out.println("------------");
 
 //////////////////////////////////////
@@ -59,35 +131,23 @@ public class ForMain {
             }
         }
 
-        for (int i =0;i<segAfterShingling.size();i++){
-            for (int j = 0;j<segAfterShingling.get(i).size();j++){
-                if (j+n+1<segList.get(i).size()) {
-                    Long verify = segAfterShingling.get(i).get(j).lineHash * 37L + segList.get(i).get(j + n).lineHash;
-                    if (!verify.equals(nextShingling.get(i).get(j).lineHash)) {
-                        System.out.println(verify);
-                       System.out.println("wrong " + i + "hang0" + j);
-                       throw new Exception();
-                    }
-                }
-            }
-        }
-        System.out.println(45489459173343L*37+segList.get(0).get(1 + 3).lineHash);
 
 
-        TreeMap<Long, List<SegmentAndLine>> nextTreeMap = secondMain.getNextShingle(lineHashMap, lastUnits,segList, 4);
-        TreeMap<Long, List<SegmentAndLine>> next2TreeMap = secondMain.getNextShingle(nextTreeMap,lastUnits, segList, 5);
-        TreeMap<Long, List<SegmentAndLine>> next3TreeMap = secondMain.getNextShingle(next2TreeMap,lastUnits, segList, 6);
-        TreeMap<Long, List<SegmentAndLine>> nextnTreeMap = secondMain.getNextShingle(next3TreeMap,lastUnits, segList, 7);
+        HashMap<Long, List<SegmentAndLine>> nextHashMap = secondMain.getNextShingle(lineHashMap, lastUnits,segList, 4);
+        HashMap<Long, List<SegmentAndLine>> next2HashMap = secondMain.getNextShingle(nextHashMap,lastUnits, segList, 5);
+        HashMap<Long, List<SegmentAndLine>> next3HashMap = secondMain.getNextShingle(next2HashMap,lastUnits, segList, 6);
+        HashMap<Long, List<SegmentAndLine>> next4HashMap = secondMain.getNextShingle(next3HashMap,lastUnits, segList, 7);
+        HashMap<Long, List<SegmentAndLine>> nextnHashMap = secondMain.getNextShingle(next4HashMap,lastUnits, segList, 8);
         String resultReport ="Report:";
         String resultdetailReport ="detail:";
         String cloneset = "cloneset:\n";
-        List<TreeMap<Long, List<SegmentAndLine>>> mapList = new ArrayList<>();
-        mapList.add(nextnTreeMap);
+        List<HashMap<Long, List<SegmentAndLine>>> mapList = new ArrayList<>();
+        mapList.add(nextnHashMap);
         for (int i = 1;i<412;i++){
-            if (i==20)
+            if (i==1)
             System.out.println(getTotal(mapList.get(i-1))+"sdfsdf"+mapList.get(i-1).size()+"ffffff"+getMoreThanOneTotal(mapList.get(i-1)));
             mapList.add(secondMain.getNextShingle(mapList.get(i-1),lastUnits, segList, 8+i));
-            if (i==20)
+            if (i==1)
                 System.out.println(getTotal(mapList.get(i-1))+"sdfsdf"+mapList.get(i-1).size()+"ffffff"+getMoreThanOneTotal(mapList.get(i-1)));
         }
         int clonenum=0;
@@ -99,7 +159,7 @@ public class ForMain {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
                 if (list.size()>1) {
-                    int length = 14;
+                    int length = 1;
                     if (i==length){
                         clonenum++;
                         cloneset += clonenum+" <";
@@ -121,20 +181,12 @@ public class ForMain {
         System.out.println(secondMain.lastUnits.size());
         for (int i =0;i<secondMain.lastUnits.size();i++){
             Unit unit = secondMain.lastUnits.get(i);
-            List<SegmentAndLine> list = nextnTreeMap.get(unit.lineHash);
+            List<SegmentAndLine> list = nextnHashMap.get(unit.lineHash);
             if(list!=null&&list.size()>1){
                 nummm++;
             }
         }
-        System.out.println(nummm+"-------");
-//        for (int i=0;i<50;i++){
-//            System.out.println("第"+(i+8));
-//            nextnTreeMap = secondMain.getNextShingle(nextnTreeMap, segList, i+8);
-//        }
-
-//        System.out.println(next2TreeMap);
-//        System.out.println("fsdf:"+secondMain.segmentToFilelist.get(10703)+segList.get(10703).get(162).lineNum);
-//        System.out.println("fsdf:"+secondMain.segmentToFilelist.get(10705)+segList.get(10705).get(20).lineNum);
+        System.out.println(nummm+"-------"+lastUnits);
         Integer z =0;
         Integer x= 0;
         Iterator iterator = lineHashMap.entrySet().iterator();
@@ -152,18 +204,11 @@ public class ForMain {
         System.out.println("time is "+(end-start));
     }
 
-//        Iterator iterator = lineHashMap.entrySet().iterator();
-//        while (iterator.hasNext()){
-//        Map.Entry entry = (Map.Entry) iterator.next();
-//        List<Line> list = (List<Line>) entry.getValue();
-//
-//
-//    }
 
-    public TreeMap<Long,List<SegmentAndLine>> getNextShingle(TreeMap<Long,List<SegmentAndLine>> inputHashMap,List<Unit> inputList, List<List<Line>>  segList,int n){
+    public HashMap<Long,List<SegmentAndLine>> getNextShingle(HashMap<Long,List<SegmentAndLine>> inputHashMap,List<Unit> inputList, List<List<Line>>  segList,int n){
 
         System.out.println("n----n---------");
-        TreeMap<Long, List<SegmentAndLine>> plus1LineMap = new TreeMap<>();
+        HashMap<Long, List<SegmentAndLine>> plus1LineMap = new HashMap<>();
         Integer onlyOneKindofLine=0;
         Integer onlyOneKind=0;
         Iterator iterator = inputHashMap.entrySet().iterator();
@@ -309,10 +354,10 @@ public class ForMain {
         return plus1LineMap;
     }
 
-    public TreeMap<Long,List<SegmentAndLine>> getNextShingle(TreeMap<Long,List<SegmentAndLine>> inputHashMap, List<List<Line>>  segList,int n){
+    public HashMap<Long,List<SegmentAndLine>> getNextShingle(HashMap<Long,List<SegmentAndLine>> inputHashMap, List<List<Line>>  segList,int n){
 
         System.out.println("n----n---------");
-        TreeMap<Long, List<SegmentAndLine>> plus1LineMap = new TreeMap<>();
+        HashMap<Long, List<SegmentAndLine>> plus1LineMap = new HashMap<>();
         Integer onlyOneKindofLine=0;
         Integer onlyOneKind=0;
         Iterator iterator = inputHashMap.entrySet().iterator();
@@ -398,8 +443,8 @@ public class ForMain {
         return totalresult;
     }
 
-    public static int getTotal(TreeMap<Long, List<SegmentAndLine>> treeMap){
-        Iterator iterator = treeMap.entrySet().iterator();
+    public static int getTotal(HashMap<Long, List<SegmentAndLine>> HashMap){
+        Iterator iterator = HashMap.entrySet().iterator();
         int x=0;
         while (iterator.hasNext())
         {
@@ -410,8 +455,8 @@ public class ForMain {
         }
         return  x;
     }
-    public static int getMoreThanOneTotal(TreeMap<Long, List<SegmentAndLine>> treeMap){
-        Iterator iterator = treeMap.entrySet().iterator();
+    public static int getMoreThanOneTotal(HashMap<Long, List<SegmentAndLine>> HashMap){
+        Iterator iterator = HashMap.entrySet().iterator();
         int x=0;
         while (iterator.hasNext())
         {

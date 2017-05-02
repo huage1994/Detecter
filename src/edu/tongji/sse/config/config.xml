@@ -14,5 +14,6 @@
     <neglects>
         <codeline>int i;</codeline>
         <codeline>String tr = "";</codeline>
+        <!--<codeline>	jsonStr.append("funcno:" + CommonOperation.nTrim(drilldef.get("FUNCNO")) +",");</codeline>-->
     </neglects>
 </config>
