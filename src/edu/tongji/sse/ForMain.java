@@ -99,7 +99,7 @@ public class ForMain {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
                 if (list.size()>1) {
-                    int length = 31;
+                    int length = 14;
                     if (i==length){
                         clonenum++;
                         cloneset += clonenum+" <";
@@ -242,6 +242,7 @@ public class ForMain {
                     j++;
                 }
                 Unit inputUnit = inputList.get(j);
+                //下面这个if是无用的  用来做异常处理
                 if (unit.segmentAndLine.compare(inputUnit.segmentAndLine)==0){
                     List<SegmentAndLine> list = inputHashMap.get(inputUnit.lineHash);
                     //TODO 二分查找。
@@ -267,7 +268,7 @@ public class ForMain {
 
         }
 //////////////////////新增加的
-        if (j+1<inputHashMap.size()) {
+        if (j+1<inputList.size()) {
             Unit inputUnit = inputList.get(j + 1);
             if (cacheSeg.compare(inputUnit.segmentAndLine) == 0) {
                 List<SegmentAndLine> list = inputHashMap.get(inputUnit.lineHash);
@@ -287,7 +288,7 @@ public class ForMain {
             }
         }
         else {
-            System.out.println("-fzzf---------------");
+            System.out.println("-fzzfz---------------");
         }
 //////////////////////新增加的
 
