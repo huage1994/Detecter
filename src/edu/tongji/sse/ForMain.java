@@ -1,9 +1,6 @@
 package edu.tongji.sse;
 
-import edu.tongji.sse.model.CloneSet;
-import edu.tongji.sse.model.Line;
-import edu.tongji.sse.model.SegmentAndLine;
-import edu.tongji.sse.model.Unit;
+import edu.tongji.sse.model.*;
 
 import java.io.File;
 import java.util.*;
@@ -15,6 +12,7 @@ public class ForMain {
 
     public List<String> segmentToFilelist = new ArrayList<>();    //segment to which File
     public static List<Unit> lastUnits = new ArrayList<>();
+    public static List<Token> statistics = new ArrayList<>();
 
     public List<CloneSet> getCloneSets(int n,String url){
         List<CloneSet> cloneSets = new ArrayList<>();
@@ -60,20 +58,37 @@ public class ForMain {
             x++;
         }
         System.out.println(x+"skh ");
-        int clonenum=0;
-        for (int i = 1;i<mapList.size();i++){
-
+        int clonenum;
+        int cloneId = 0;
+        for (int i = 0;i<mapList.size();i++){
+            clonenum = 0;
             Iterator iterator = mapList.get(i).entrySet().iterator();
             while (iterator.hasNext())
             {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 List<SegmentAndLine> list = (List<SegmentAndLine>) entry.getValue();
                 if (list.size()>1) {
-                    
 
+                    List<Clone> clones = new ArrayList<>();
+                     Clone compareClone = new Clone("",-1,-1);
+                    for (SegmentAndLine seg:list){
+                        Clone clone = new Clone(secondMain.segmentToFilelist.get(seg.segNum),segList.get(seg.segNum).get(seg.lineNum).preLineNum,segList.get(seg.segNum).get(seg.lineNum+(i)+n-1).lineNum);
+                        if (!clone.compare(compareClone)) {
+                            clones.add(clone);
+                        }
+                        compareClone = clone;
+                    }
+                    if (clones.size()>1) {
+                        cloneId++;
+                        clonenum++;
+                        CloneSet cloneSet = new CloneSet(cloneId, n + i, clones);
+                        cloneSets.add(cloneSet);
+                    }
+                    //   n+i
+
+                    ///抽空删掉。TODO
                     int length = 12;
                     if (i==length){
-                        clonenum++;
                         cloneset += clonenum+" <";
                         for (SegmentAndLine se :
                                 list) {
@@ -84,7 +99,7 @@ public class ForMain {
                 }
             }
 //            resultdetailReport += mapList.get(i).size() +"类" + "     "+x+"代码行数"+ "\n";
-
+            statistics.add(new Token(i+n,clonenum));
         }
         System.out.println(resultReport);
         System.out.println(resultdetailReport);
@@ -93,6 +108,10 @@ public class ForMain {
         return cloneSets;
     }
 
+    public List<Token> getStatistics(){
+        //要在 getCloneSets函数之后调用。
+        return statistics;
+    }
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
         ForMain secondMain = new ForMain();

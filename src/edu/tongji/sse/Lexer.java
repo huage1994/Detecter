@@ -167,6 +167,10 @@ public class Lexer {
             case '/':
                 getChar();
                 return  KeyWordAndType.DIV;
+            case '%':
+                getChar();
+                return KeyWordAndType.PERCENT;
+
             case '=':
                 if (getChar('=')) {
 
